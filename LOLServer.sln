@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LOLServer", "LOLServer\LOLServer.csproj", "{2EB58271-A212-45E8-9B04-3A53E3541633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetFramework", "NetFramework\NetFramework.csproj", "{1FEC9112-F862-456D-A857-A2FF34D93E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetFramework", "NetFramework\NetFramework.csproj", "{1FEC9112-F862-456D-A857-A2FF34D93E54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{78F65A92-B601-4606-A8A4-7A99AE9BF196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1FEC9112-F862-456D-A857-A2FF34D93E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FEC9112-F862-456D-A857-A2FF34D93E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FEC9112-F862-456D-A857-A2FF34D93E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F65A92-B601-4606-A8A4-7A99AE9BF196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F65A92-B601-4606-A8A4-7A99AE9BF196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F65A92-B601-4606-A8A4-7A99AE9BF196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F65A92-B601-4606-A8A4-7A99AE9BF196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
