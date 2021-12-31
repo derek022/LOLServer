@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LOLServer", "LOLServer\LOLS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetFramework", "NetFramework\NetFramework.csproj", "{1FEC9112-F862-456D-A857-A2FF34D93E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{78F65A92-B601-4606-A8A4-7A99AE9BF196}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameProtocol", "GameProtocol\GameProtocol.csproj", "{78F65A92-B601-4606-A8A4-7A99AE9BF196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

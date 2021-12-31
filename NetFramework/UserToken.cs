@@ -101,7 +101,7 @@ namespace NetFrame
            }
        }
 
-       public void onWrite() {
+       void onWrite() {
            //判断发送消息队列是否有消息
            if (writeQueue.Count == 0) { isWriting = false; return; }
            //取出第一条待发消息

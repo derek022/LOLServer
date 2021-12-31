@@ -12,7 +12,9 @@ namespace LOLServer
             ss.encode = MessageEncoding.encode;
             ss.decode = MessageEncoding.decode;
             ss.center = new HandlerCenter();
-            ss.Start(55509);
+            ss.LD = LengthEncoding.decode;
+            ss.LE = LengthEncoding.encode;
+            ss.Start(55590);
 
             while (true) { }
             
