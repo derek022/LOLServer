@@ -16,6 +16,7 @@ namespace LOLServer
         public HandlerCenter()
         {
             login = new LoginHandler();
+            
         }
 
         public override void ClientClose(UserToken token, string error)

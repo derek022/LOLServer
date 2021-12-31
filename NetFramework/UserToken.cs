@@ -88,7 +88,7 @@ namespace NetFrame
            onData();
        }
 
-       public void write(byte[] value) {
+       public void Write(byte[] value) {
            if (conn == null) {
                //此连接已经断开了
                closeProcess(this, "调用已经断开的连接");

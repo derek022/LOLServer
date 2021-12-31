@@ -1,13 +1,19 @@
 ﻿using GameProtocol;
 using GameProtocol.dto;
+using LOLServer.biz;
+using LOLServer.biz.account;
+using LOLServer.tool;
 using NetFrame;
 using NetFrame.auto;
 using System;
 
 namespace LOLServer.logic.login
 {
-    class LoginHandler : HandlerInterface
+    public class LoginHandler :AbsOnceHandler ,HandlerInterface
     {
+
+        IAccountBiz accountBiz = BizFactory.accountBiz;
+
         public void ClientClose(UserToken token, string error)
         {
             Console.WriteLine("有客户端断开连接 ");
@@ -23,26 +29,47 @@ namespace LOLServer.logic.login
             switch (message.command)
             {
                 case LoginProtocol.LOGIN_CREQ:
-                    login(token, message.GetMessage<AccountInfoDTO>());
+                    Login(token, message.GetMessage<AccountInfoDTO>());
                     break;
 
                 case LoginProtocol.REG_CREQ:
-                    reg(token, message.GetMessage<AccountInfoDTO>());
+                    Reg(token, message.GetMessage<AccountInfoDTO>());
                     break;
             }
         }
 
-        public void login(UserToken token, AccountInfoDTO value)
+        public void Login(UserToken token, AccountInfoDTO value)
         {
-            Console.WriteLine("dto " + value.account);
+            ExecutorPool.Instance.Execute(() =>
+            {
+                int res = accountBiz.Login(token, value.account, value.password);
+
+                Write(token, LoginProtocol.LOGIN_SRES, res);
+            });
         }
 
-        public void reg(UserToken token,AccountInfoDTO value)
+        public void Reg(UserToken token,AccountInfoDTO value)
         {
+            ExecutorPool.Instance.Execute(() =>
+            {
+                int res = accountBiz.Register(token, value.account, value.password);
 
+                Write(token, LoginProtocol.REG_SRES, res);
+            });
+        }
+
+        public void ClientClose(UserToken token,AccountInfoDTO value)
+        {
+            ExecutorPool.Instance.Execute(() =>
+            {
+                accountBiz.Close(token);
+            });
         }
 
 
-
+        public override byte getType()
+        {
+            return Protocol.TYPE_LOGIN;
+        }
     }
 }
