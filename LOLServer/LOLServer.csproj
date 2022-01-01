@@ -10,9 +10,4 @@
     <ProjectReference Include="..\NetFramework\NetFramework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="cache\" />
-    <Folder Include="dao\" />
-  </ItemGroup>
-
 </Project>

@@ -1,7 +1,6 @@
 ﻿using GameProtocol;
 using GameProtocol.dto;
 using LOLServer.biz;
-using LOLServer.biz.account;
 using LOLServer.tool;
 using NetFrame;
 using NetFrame.auto;
@@ -17,6 +16,10 @@ namespace LOLServer.logic.login
         public void ClientClose(UserToken token, string error)
         {
             Console.WriteLine("有客户端断开连接 ");
+            ExecutorPool.Instance.Execute(() =>
+            {
+                accountBiz.Close(token);
+            });
         }
 
         public void ClientConnect(UserToken token)
