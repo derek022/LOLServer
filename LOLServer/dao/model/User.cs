@@ -13,5 +13,18 @@ namespace LOLServer.dao.model
         public int winCount;  // 胜利场次
         public int loseCount; // 失败场次
         public int ranCount; // 逃跑场次
+
+        public int accountId; // 角色所属的账号ID
+
+        public User(int id,string name)
+        {
+            this.id = id;
+            this.name = name;
+            level = 0;
+            exp = 0;
+            winCount = 0;
+            loseCount = 0;
+            ranCount = 0;
+        }
     }
 }
