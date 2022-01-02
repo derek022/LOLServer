@@ -30,7 +30,11 @@ namespace LOLServer.cache.impl
         {
             User user = new User(index++,name);
             user.accountId = accountId;
+            // 创建成功，进行账号ID和用户ID的绑定
             accToUid.Add(accountId, user.id);
+            // 用户ID和模型的绑定
+            idToModel.Add(user.id, user);
+
             return true;
         }
 

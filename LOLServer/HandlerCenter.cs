@@ -24,6 +24,8 @@ namespace LOLServer
         public override void ClientClose(UserToken token, string error)
         {
             Console.WriteLine($"有客户端断开连接了 -- HashCode: ${ token.GetHashCode()}");
+            user.ClientClose(token, error);
+            login.ClientClose(token, error);
         }
 
         public override void ClientConnect(UserToken token)
@@ -34,7 +36,7 @@ namespace LOLServer
         public override void MessageReceive(UserToken token, object message)
         {
             SocketModel model = message as SocketModel;
-            Console.WriteLine($"有新消息 来自 ${token.GetHashCode()}; 内容 ${model}");
+            Console.WriteLine($"有新消息 来自 ${token.GetHashCode()}; type: ${model.type} ,area: ${model.area}, command:${model.command}, obj:${model.message}");
 
             switch (model.type)
             {

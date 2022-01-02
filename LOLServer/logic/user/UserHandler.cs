@@ -19,7 +19,7 @@ namespace LOLServer.logic.user
 
         public void ClientClose(UserToken token, string error)
         {
-
+            userBiz.offline(token);
         }
 
         public void ClientConnect(UserToken token)
@@ -73,8 +73,15 @@ namespace LOLServer.logic.user
 
         private UserDTO convert(User user)
         {
+            if (user == null) return null;
+
             return new UserDTO(user.id, user.name, user.level, user.exp, user.winCount, user.loseCount, user.ranCount);
 
+        }
+
+        public override byte getType()
+        {
+            return Protocol.TYPE_USER;
         }
     }
 }
