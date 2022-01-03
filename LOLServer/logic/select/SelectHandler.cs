@@ -40,32 +40,76 @@ namespace LOLServer.logic.select
         public void Create(List<int> teamOne, List<int> teamTwo)
         {
             SelectRoom room;
-            if(cache.TryPop(out room))
-            {
-
-            }
-            else
-            {
+            if(!cache.TryPop(out room))
+            { 
                 room = new SelectRoom();
-
-
-
+                // 设置唯一ID
+                room.setArea(index.GetAndAdd());
             }
+            // 房间数据初始化
+            room.Init(teamOne, teamTwo);
+
+            // 绑定映射关系
+            foreach(int item in teamOne)
+            {
+                userRoomDict.TryAdd(item, room.getArea());
+            }
+            foreach (int item in teamTwo)
+            {
+                userRoomDict.TryAdd(item, room.getArea());
+            }
+            roomMapDict.TryAdd(room.getArea(), room);
         }
 
         public void Destory(int roomId)
         {
+            SelectRoom room;
+            if(roomMapDict.TryRemove(roomId,out room))
+            {
+                // 移除角色和房间之间的绑定关系
 
+
+                // 将房间丢进缓存队列， 供下次选择使用
+
+
+            }
         }
 
         public void ClientClose(UserToken token, string error)
         {
-            
+            int userId = getUserId(token);
+            if(userRoomDict.ContainsKey(userId))
+            {
+                int roomId;
+                // 移除并获取玩家所在房间ID
+                userRoomDict.TryRemove(userId, out roomId);
+
+                if(roomMapDict.ContainsKey(roomId))
+                {
+                    roomMapDict[roomId].ClientClose(token, error);
+                }
+            }
         }
 
+
+        /// <summary>
+        /// 消息转发，转送给SelectRoom 转发
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="message"></param>
         public void MessageReceive(UserToken token, SocketModel message)
         {
-         
+            int userId = getUserId(token);
+            if(userRoomDict.ContainsKey(userId))
+            {
+                int roomId = userRoomDict[userId];
+
+                if(roomMapDict.ContainsKey(roomId))
+                {
+                    roomMapDict[roomId].MessageReceive(token, message);
+                }
+            }
+
         }
     }
 }

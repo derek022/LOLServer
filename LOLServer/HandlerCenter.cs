@@ -5,6 +5,7 @@ using GameProtocol;
 using LOLServer.logic;
 using LOLServer.logic.login;
 using LOLServer.logic.match;
+using LOLServer.logic.select;
 using LOLServer.logic.user;
 using NetFrame;
 using NetFrame.auto;
@@ -16,17 +17,20 @@ namespace LOLServer
         HandlerInterface login;
         HandlerInterface user;
         HandlerInterface match;
+        HandlerInterface select;
 
         public HandlerCenter()
         {
             login = new LoginHandler();
             user = new UserHandler();
             match = new MatchHandler();
+            select = new SelectHandler();
         }
 
         public override void ClientClose(UserToken token, string error)
         {
             Console.WriteLine($"有客户端断开连接了 -- HashCode: ${ token.GetHashCode()}");
+            select.ClientClose(token, error);
             match.ClientClose(token, error);
             // user的连接关闭方法，一定要放在逻辑处理单元后面
             // 其他逻辑单元需要通过user绑定数据来清理内存
@@ -57,6 +61,9 @@ namespace LOLServer
 
                 case Protocol.TYPE_MATCH:
                     match.MessageReceive(token, model);
+                    break;
+                case Protocol.TYPE_SELECT:
+                    select.MessageReceive(token, model);
                     break;
                 default:
                     //未知模块， 可能是客户端作弊了，无视
