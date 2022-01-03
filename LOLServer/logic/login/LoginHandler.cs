@@ -22,11 +22,6 @@ namespace LOLServer.logic.login
             });
         }
 
-        public void ClientConnect(UserToken token)
-        {
-            
-        }
-
         public void MessageReceive(UserToken token, SocketModel message)
         {
             switch (message.command)

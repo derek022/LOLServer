@@ -29,7 +29,7 @@ namespace LOLServer.biz.impl
             return true;
         }
 
-        public User getInfo(UserToken token)
+        public User getByAccountId(UserToken token)
         {
 
             int accountId = accBiz.Get(token);
@@ -42,6 +42,16 @@ namespace LOLServer.biz.impl
         public User GetInfo(int id)
         {
             return userCache.get(id);
+        }
+
+        public User getInfo(UserToken token)
+        {
+            return userCache.get(token);
+        }
+
+        public User GetInfoByAccount(UserToken token)
+        {
+            return userCache.get(token);
         }
 
         public UserToken getToken(int id)

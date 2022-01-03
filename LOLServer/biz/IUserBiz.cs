@@ -30,6 +30,15 @@ namespace LOLServer.biz
         /// <returns></returns>
         User GetInfo(int id);
 
+
+        /// <summary>
+        /// 通过账号的连接对象获取，仅在初始登录验证角色
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        User GetInfoByAccount(UserToken token);
+
+
         /// <summary>
         /// 用户上线
         /// </summary>

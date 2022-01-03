@@ -1,4 +1,6 @@
-﻿using NetFrame;
+﻿using LOLServer.biz;
+using LOLServer.dao.model;
+using NetFrame;
 using NetFrame.auto;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,8 @@ namespace LOLServer.logic
 {
     public class AbsOnceHandler
     {
+
+        public IUserBiz userBiz = BizFactory.userBiz;
 
         private byte type;
         private int area;
@@ -30,6 +34,34 @@ namespace LOLServer.logic
         public virtual byte getType()
         {
             return this.type;
+        }
+
+
+        public User getUser(UserToken token)
+        {
+            return userBiz.getInfo(token);
+        }
+
+        /// <summary>
+        /// 通过对象
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public int getUserId (UserToken token)
+        {
+            User user = getUser(token);
+            if (user == null) return -1;
+            return user.id;
+        }
+
+        /// <summary>
+        /// 通过ID获取连接
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public UserToken getToken(int id)
+        {
+            return userBiz.getToken(id);
         }
 
         #region 通过连接对象发送
@@ -62,22 +94,27 @@ namespace LOLServer.logic
         #region 通过玩家ID发送
         public void Write(int id, int command)
         {
-
+            Write(id, command, null);
         }
 
         public void Write(int id, int command, object message)
         {
-
+            Write(id, getArea(), command, message);
         }
 
         public void Write(int id, int area, int command, object message)
         {
-
+            Write(id, getType(), area, command, message);
         }
 
         public void Write(int id, byte type, int area, int command, object message)
         {
-
+            UserToken token = getToken(id);
+            if(token == null)
+            {
+                return;
+            }
+            Write(token, type, area, command, message);
         }
         #endregion
 
@@ -86,6 +123,7 @@ namespace LOLServer.logic
         {
             return new SocketModel(type, area, command, message);
         }
+
 
     }
 }

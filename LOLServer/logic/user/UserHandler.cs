@@ -14,17 +14,9 @@ namespace LOLServer.logic.user
     public class UserHandler : AbsOnceHandler, HandlerInterface
     {
 
-        IUserBiz userBiz = BizFactory.userBiz;
-
-
         public void ClientClose(UserToken token, string error)
         {
             userBiz.offline(token);
-        }
-
-        public void ClientConnect(UserToken token)
-        {
-
         }
 
         public void MessageReceive(UserToken token, SocketModel message)
@@ -58,7 +50,7 @@ namespace LOLServer.logic.user
         {
             ExecutorPool.Instance.Execute(() =>
             {
-                Write(token, UserProtocol.INFO_SRES, convert(userBiz.getInfo(token)));
+                Write(token, UserProtocol.INFO_SRES, convert(userBiz.GetInfoByAccount(token)));
             });
         }
 

@@ -10,7 +10,7 @@ namespace LOLServer.logic
     {
         void ClientClose(UserToken token, string error);
 
-        void ClientConnect(UserToken token);
+        //void ClientConnect(UserToken token);
 
         void MessageReceive(UserToken token, SocketModel message);
     }
