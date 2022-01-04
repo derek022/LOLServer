@@ -50,7 +50,7 @@ namespace LOLServer.logic.user
         {
             ExecutorPool.Instance.Execute(() =>
             {
-                Write(token, UserProtocol.INFO_SRES, convert(userBiz.GetInfoByAccount(token)));
+                Write(token, UserProtocol.INFO_SRES, convert(userBiz.getInfoByAccount(token)));
             });
         }
 

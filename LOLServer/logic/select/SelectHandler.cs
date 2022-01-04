@@ -70,7 +70,7 @@ namespace LOLServer.logic.select
 
 
                 // 将房间丢进缓存队列， 供下次选择使用
-
+                cache.Push(room);
 
             }
         }

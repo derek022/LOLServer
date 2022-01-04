@@ -137,8 +137,12 @@ namespace LOLServer.logic.match
                     EventUtil.createSelect(room.teamOne, room.teamTwo);
 
 
+                    WriteToUsers(room.teamOne.ToArray(), Protocol.TYPE_SELECT, getArea(), MatchProtocol.ENTER_SELECT_BRO, null);
+                    WriteToUsers(room.teamTwo.ToArray(), Protocol.TYPE_SELECT, getArea(), MatchProtocol.ENTER_SELECT_BRO, null);
+
+
                     // 移除玩家与房间的映射
-                    foreach(int item in room.teamOne)
+                    foreach (int item in room.teamOne)
                     {
                         int i;
                         userRoomDict.TryRemove(item, out i);

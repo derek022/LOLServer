@@ -8,7 +8,6 @@ namespace LOLServer.tool
     public class ConcurrentInteger
     {
         int value;
-        Mutex tex = new Mutex();
 
         public ConcurrentInteger()
         {

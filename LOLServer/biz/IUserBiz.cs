@@ -28,7 +28,7 @@ namespace LOLServer.biz
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        User GetInfo(int id);
+        User getInfo(int id);
 
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace LOLServer.biz
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        User GetInfoByAccount(UserToken token);
+        User getInfoByAccount(UserToken token);
 
 
         /// <summary>

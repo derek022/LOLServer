@@ -1,4 +1,5 @@
-﻿using NetFrame.auto;
+﻿using LOLServer.tool;
+using NetFrame.auto;
 using System;
 
 namespace LOLServer
@@ -17,7 +18,7 @@ namespace LOLServer
             ss.Start(55590);
 
             while (true) { }
-            
+
         }
     }
 }

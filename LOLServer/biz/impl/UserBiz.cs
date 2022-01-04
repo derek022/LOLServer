@@ -39,7 +39,7 @@ namespace LOLServer.biz.impl
             return userCache.getByAccountId(accountId);
         }
 
-        public User GetInfo(int id)
+        public User getInfo(int id)
         {
             return userCache.get(id);
         }
@@ -49,7 +49,7 @@ namespace LOLServer.biz.impl
             return userCache.get(token);
         }
 
-        public User GetInfoByAccount(UserToken token)
+        public User getInfoByAccount(UserToken token)
         {
             return userCache.get(token);
         }

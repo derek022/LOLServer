@@ -42,6 +42,11 @@ namespace LOLServer.logic
             return userBiz.getInfo(token);
         }
 
+        public User getUser(int id)
+        {
+            return userBiz.getInfo(id);
+        }
+
         /// <summary>
         /// 通过对象
         /// </summary>
@@ -115,6 +120,27 @@ namespace LOLServer.logic
                 return;
             }
             Write(token, type, area, command, message);
+        }
+
+
+        public void WriteToUsers(int [] users,byte type,int area,int command,object message)
+        {
+            // 消息体编码
+            byte[] value = MessageEncoding.encode(CreateSocketModel(type, area, command, message));
+            // 长度编码
+            value = LengthEncoding.encode(value);
+
+            foreach(int userId in users)
+            {
+                UserToken token = userBiz.getToken(userId);
+                if (token == null) continue;
+
+                byte[] bs = new byte[value.Length];
+                Array.Copy(value, 0, bs, 0, value.Length);
+                // 写入之后，二进制数据变空，复制一份出来
+                token.Write(bs);
+
+            }
         }
         #endregion
 
