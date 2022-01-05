@@ -4,6 +4,7 @@ using System.Text;
 
 namespace GameProtocol.dto
 {
+    [Serializable]
     public class SelectModel
     {
         public int userId;  //用户ID

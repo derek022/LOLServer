@@ -66,8 +66,18 @@ namespace LOLServer.logic.select
             SelectRoom room;
             if(roomMapDict.TryRemove(roomId,out room))
             {
+                int temp = 0;
                 // 移除角色和房间之间的绑定关系
-
+                foreach(var item in room.teamOne.Keys)
+                {
+                    userRoomDict.TryRemove(item, out temp);
+                }
+                foreach (var item in room.teamTwo.Keys)
+                {
+                    userRoomDict.TryRemove(item, out temp);
+                }
+                room.list.Clear();
+                
 
                 // 将房间丢进缓存队列， 供下次选择使用
                 cache.Push(room);
@@ -78,6 +88,7 @@ namespace LOLServer.logic.select
         public void ClientClose(UserToken token, string error)
         {
             int userId = getUserId(token);
+            // 判断当前顽疾是否有房间
             if(userRoomDict.ContainsKey(userId))
             {
                 int roomId;

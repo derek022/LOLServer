@@ -16,6 +16,8 @@ namespace LOLServer.dao.model
 
         public int accountId; // 角色所属的账号ID
 
+        public int[] heroList;
+
         public User(int id,string name)
         {
             this.id = id;

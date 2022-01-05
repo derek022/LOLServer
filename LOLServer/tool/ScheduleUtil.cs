@@ -78,7 +78,7 @@ namespace LOLServer.tool
         /// <returns></returns>
         public int schedule(TimeEvent task,long delay)
         {
-            //毫秒转微秒
+            //毫秒转 100 ns
             return schedulemms(task, delay * 1000 * 10);
         }
 
@@ -104,7 +104,7 @@ namespace LOLServer.tool
         /// 移除任务ID
         /// </summary>
         /// <param name="id"></param>
-        public void removeSchedule(int id)
+        public void removeMission(int id)
         {
             lock(removelist)
             {
