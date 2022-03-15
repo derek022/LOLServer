@@ -2,103 +2,124 @@
 using NetFrame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LOLServer.cache.impl
 {
     public class UserCache : IUserCache
     {
-        private int index = 0;
+        public int index = 0;
         /// <summary>
         /// 用户ID和模型的映射表
         /// </summary>
-        Dictionary<int, User> idToModel = new Dictionary<int, User>();
-
+        Dictionary<int, USER> idToModel = new Dictionary<int, USER>();
         /// <summary>
-        /// 账号ID和角色ID之间的绑定，一个账户可以有多个角色
+        /// 帐号ID和角色ID之间的绑定
         /// </summary>
         Dictionary<int, int> accToUid = new Dictionary<int, int>();
 
-        /// <summary>
-        /// 
-        /// </summary>
         Dictionary<int, UserToken> idToToken = new Dictionary<int, UserToken>();
-
         Dictionary<UserToken, int> tokenToId = new Dictionary<UserToken, int>();
 
-        public bool Create(UserToken token, string name,int accountId)
+        public bool create(NetFrame.UserToken token, string name, int accountId)
         {
-            User user = new User(index++,name);
+            USER user = new USER();
+            user.name = name;
             user.accountId = accountId;
-            // 创建成功，进行账号ID和用户ID的绑定
+            List<int> list = new List<int>();
+            for (int i = 1; i < 9; i++)
+            {
+                list.Add(i);
+            }
+            user.heroList = list.ToArray();
+            user.id = index++;
+            user.Add();
+            //创建成功 进行帐号ID和用户ID的绑定
             accToUid.Add(accountId, user.id);
-            // 用户ID和模型的绑定
+            //创建成功 进行用户ID和用户模型的绑定
             idToModel.Add(user.id, user);
-
             return true;
         }
 
-        public User get(UserToken token)
-        {
-            if (!has(token)) return null;
-
-            return idToModel[tokenToId[token]];
-        }
-
-        public User get(int id)
-        {
-            return idToModel[id];
-        }
-
-        public User getByAccountId(int id)
-        {
-            if(!accToUid.ContainsKey(id))
-            {
-                return null;
-            }
-
-            return idToModel[accToUid[id]];
-        }
-
-        public UserToken getToken(int id)
-        {
-            return idToToken[id];
-        }
-
-        public bool has(UserToken token)
+        public bool has(NetFrame.UserToken token)
         {
             return tokenToId.ContainsKey(token);
         }
 
         public bool hasByAccountId(int id)
         {
+            init(id);
             return accToUid.ContainsKey(id);
         }
+
+        public dao.model.USER get(NetFrame.UserToken token)
+        {
+            if (!has(token)) return null;
+
+            return idToModel[tokenToId[token]];
+        }
+
+        public dao.model.USER get(int id)
+        {
+            return idToModel[id];
+        }
+
+        public void offline(NetFrame.UserToken token)
+        {
+            if (tokenToId.ContainsKey(token))
+            {
+                if (idToToken.ContainsKey(tokenToId[token]))
+                {
+                    idToToken.Remove(tokenToId[token]);
+                }
+                tokenToId.Remove(token);
+            }
+        }
+
+        public NetFrame.UserToken getToken(int id)
+        {
+            return idToToken[id];
+        }
+
+
+        public USER online(UserToken token, int id)
+        {
+            idToToken.Add(id, token);
+            tokenToId.Add(token, id);
+            return idToModel[id];
+        }
+
+        public USER getByAccountId(int accId)
+        {
+            init(accId);
+            if (!accToUid.ContainsKey(accId)) return null;
+
+            return idToModel[accToUid[accId]];
+
+        }
+
+
 
         public bool isOnline(int id)
         {
             return idToToken.ContainsKey(id);
         }
 
-        public void offline(UserToken token)
+        public void init(int accountId)
         {
-            if(tokenToId.ContainsKey(token))
-            {
-                if(idToToken.ContainsKey(tokenToId[token]))
-                {
-                    idToToken.Remove(tokenToId[token]);
-                }
 
-                tokenToId.Remove(token);
+            if (accToUid.ContainsKey(accountId)) return;
+            USER user = new USER(accountId);
+            if (user.id >= 0)
+            {
+                //获取成功 进行帐号ID和用户ID的绑定
+                accToUid.Add(accountId, user.id);
+                //获取成功 进行用户ID和用户模型的绑定
+                idToModel.Add(user.id, user);
             }
         }
 
-        public User online(UserToken token,int id)
-        {
-            idToToken.Add(id, token);
-            tokenToId.Add(token, id);
-
-            return idToModel[id];
-        }
     }
 }

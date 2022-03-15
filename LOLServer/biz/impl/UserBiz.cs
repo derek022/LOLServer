@@ -1,79 +1,67 @@
 ﻿using LOLServer.cache;
 using LOLServer.dao.model;
-using NetFrame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LOLServer.biz.impl
 {
     /// <summary>
     /// 用户事物处理
     /// </summary>
-    public class UserBiz : IUserBiz
+   public class UserBiz:IUserBiz
     {
-        IAccountBiz accBiz = BizFactory.accountBiz;
-        IUserCache userCache = CacheFactory.userCache;
-
-        public bool Create(UserToken token, string name)
+       IAccountBiz accBiz = BizFactory.accountBiz;
+       IUserCache userCache = CacheFactory.userCache;
+        public bool Create(NetFrame.UserToken token, string name)
         {
-            // 判断是否登录，获取账号ID
-            // 的判断当前战虎是否存在
-
-            int accountId = accBiz.Get(token);
+            //帐号是否登陆 获取帐号ID
+            int accountId= accBiz.get(token);
             if (accountId == -1) return false;
-            // 判断当前账号是否已经拥有角色
+            //判断当前帐号是否已经拥有角色
             if (userCache.hasByAccountId(accountId)) return false;
-
-            userCache.Create(token, name,accountId);
+            userCache.create(token, name,accountId);
             return true;
         }
 
-        public User getByAccountId(UserToken token)
+        public dao.model.USER getByAccount(NetFrame.UserToken token)
         {
-
-            int accountId = accBiz.Get(token);
-
+            //帐号是否登陆 获取帐号ID
+            int accountId = accBiz.get(token);
             if (accountId == -1) return null;
-
             return userCache.getByAccountId(accountId);
         }
 
-        public User getInfo(int id)
+        public dao.model.USER get(int id)
         {
             return userCache.get(id);
         }
 
-        public User getInfo(UserToken token)
-        {
-            return userCache.get(token);
+        public USER online(NetFrame.UserToken token)
+        { int accountId= accBiz.get(token);
+            if (accountId == -1) return null;
+            USER user = userCache.getByAccountId(accountId);
+            if (userCache.isOnline(user.id)) return null;
+            userCache.online(token, user.id);
+            return user;
         }
 
-        public User getInfoByAccount(UserToken token)
-        {
-            return userCache.get(token);
-        }
-
-        public UserToken getToken(int id)
-        {
-            return userCache.getToken(id);
-        }
-
-        public void offline(UserToken token)
+        public void offline(NetFrame.UserToken token)
         {
             userCache.offline(token);
         }
 
-        public User online(UserToken token)
+        public NetFrame.UserToken getToken(int id)
         {
-            int accountId = accBiz.Get(token);
-            if (accountId == -1) return null;
+          return  userCache.getToken(id);
+        }
 
-            User user = userCache.getByAccountId(accountId);
-            // 已经在线
-            if (userCache.isOnline(user.id)) return null;
 
-            return userCache.online(token, user.id);
+        public USER get(NetFrame.UserToken token)
+        {
+            return userCache.get(token);
         }
     }
 }

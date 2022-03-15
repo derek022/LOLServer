@@ -4,152 +4,141 @@ using NetFrame;
 using NetFrame.auto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LOLServer.logic
 {
-    public class AbsOnceHandler
+   public class AbsOnceHandler
     {
+      public IUserBiz userBiz = BizFactory.userBiz;
 
-        public IUserBiz userBiz = BizFactory.userBiz;
+       private byte type;
+       private int area;
 
-        private byte type;
-        private int area;
+       public void SetArea(int area) {
+           this.area = area;
+       }
 
-        public void setArea(int area)
-        {
-            this.area = area;
-        }
+       public virtual int GetArea() {
+           return area;
+       }
 
-        public virtual int getArea()
-        {
-            return this.area;
-        }
+       public void SetType(byte type)
+       {
+           this.type = type;
+       }
 
-        public void setType(byte type)
-        {
-            this.type = type;
-        }
+       public new virtual byte GetType()
+       {
+           return type;
+       }
 
-        public virtual byte getType()
-        {
-            return this.type;
-        }
+       /// <summary>
+       /// 通过连接对象获取用户
+       /// </summary>
+       /// <param name="token"></param>
+       /// <returns></returns>
+       public USER getUser(UserToken token)
+       {
+           return userBiz.get(token);
+       }
 
+       /// <summary>
+       /// 通过ID获取用户
+       /// </summary>
+       /// <param name="token"></param>
+       /// <returns></returns>
+       public USER getUser(int id)
+       {
+           return userBiz.get(id);
+       }
 
-        public User getUser(UserToken token)
-        {
-            return userBiz.getInfo(token);
-        }
-
-        public User getUser(int id)
-        {
-            return userBiz.getInfo(id);
-        }
-
-        /// <summary>
-        /// 通过对象
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public int getUserId (UserToken token)
-        {
-            User user = getUser(token);
-            if (user == null) return -1;
-            return user.id;
-        }
-
-        /// <summary>
-        /// 通过ID获取连接
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public UserToken getToken(int id)
-        {
-            return userBiz.getToken(id);
-        }
-
-        #region 通过连接对象发送
-        public void Write(UserToken token, int command)
-        {
-            Write(token, command, null);
-        }
-
-        public void Write(UserToken token, int command, object message)
-        {
-            Write(token, getArea(), command, message);
-        }
-
-        public void Write(UserToken token, int area, int command, object message)
-        {
-            Write(token,getType() ,area, command, message);
-        }
-
-        public void Write(UserToken token,byte type,int area,int command,object message)
-        {
-            // 消息体编码
-            byte[] value = MessageEncoding.encode(CreateSocketModel(type, area, command, message));
-            // 长度编码
-            value = LengthEncoding.encode(value);
-
-            token.Write(value);
-        }
-        #endregion
-
-        #region 通过玩家ID发送
-        public void Write(int id, int command)
-        {
-            Write(id, command, null);
-        }
-
-        public void Write(int id, int command, object message)
-        {
-            Write(id, getArea(), command, message);
-        }
-
-        public void Write(int id, int area, int command, object message)
-        {
-            Write(id, getType(), area, command, message);
-        }
-
-        public void Write(int id, byte type, int area, int command, object message)
-        {
-            UserToken token = getToken(id);
-            if(token == null)
-            {
-                return;
-            }
-            Write(token, type, area, command, message);
-        }
+       /// <summary>
+       /// 通过连接对象 获取用户ID
+       /// </summary>
+       /// <param name="token"></param>
+       /// <returns></returns>
+       public int getUserId(UserToken token){
+           USER user = getUser(token);
+           if(user==null)return -1;
+           return user.id;
+       }
+       /// <summary>
+       /// 通过用户ID获取连接
+       /// </summary>
+       /// <param name="id"></param>
+       /// <returns></returns>
+       public UserToken getToken(int id) {
+           return userBiz.getToken(id);
+       }
 
 
-        public void WriteToUsers(int [] users,byte type,int area,int command,object message)
-        {
-            // 消息体编码
-            byte[] value = MessageEncoding.encode(CreateSocketModel(type, area, command, message));
-            // 长度编码
-            value = LengthEncoding.encode(value);
+       #region 通过连接对象发送
+       public void write(UserToken token,int command) {
+           write(token, command, null);
+       }
+       public void write(UserToken token, int command,object message)
+       {
+           write(token,GetArea(), command, message);
+       }
+       public void write(UserToken token,int area, int command, object message)
+       {
+           write(token,GetType(), GetArea(), command, message);
+       }
+       public void write(UserToken token,byte type, int area, int command, object message)
+       {
+           byte[] value = MessageEncoding.encode(CreateSocketModel(type,area,command,message));
+           value = LengthEncoding.encode(value);
+           token.Write(value);
+       }
+       #endregion
 
-            foreach(int userId in users)
-            {
-                UserToken token = userBiz.getToken(userId);
-                if (token == null) continue;
+       #region 通过ID发送
+       public void write(int id, int command)
+       {
+           write(id, command, null);
+       }
+       public void write(int id, int command, object message)
+       {
+           write(id, GetArea(), command, message);
+       }
+       public void write(int id, int area, int command, object message)
+       {
+           write(id, GetType(), area, command, message);
+       }
+       public void write(int id, byte type, int area, int command, object message)
+       {
+           UserToken token= getToken(id);
+           if(token==null)return;
+           write(token, type, area, command, message);
+       }
 
-                byte[] bs = new byte[value.Length];
-                Array.Copy(value, 0, bs, 0, value.Length);
-                // 写入之后，二进制数据变空，复制一份出来
-                token.Write(bs);
+       public void writeToUsers(int[] users, byte type, int area, int command, object message) {
+           byte[] value = MessageEncoding.encode(CreateSocketModel(type, area, command, message));
+           value = LengthEncoding.encode(value);
+           foreach (int item in users)
+           {
+               UserToken token = userBiz.getToken(item);
+               if (token == null) continue;
+                   byte[] bs = new byte[value.Length];
+                   Array.Copy(value, 0, bs, 0, value.Length);
+                   token.Write(bs);
+               
+           }
+       }
 
-            }
-        }
-        #endregion
+
+       #endregion
 
 
-        public SocketModel CreateSocketModel(byte type,int area,int command,object message)
-        {
-            return new SocketModel(type, area, command, message);
-        }
 
 
+
+       public SocketModel CreateSocketModel(byte type, int area, int command, object message)
+       {
+           return new SocketModel(type, area, command, message);
+       }
     }
 }

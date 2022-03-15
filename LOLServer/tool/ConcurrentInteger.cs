@@ -1,61 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LOLServer.tool
 {
-    public class ConcurrentInteger
+   public class ConcurrentInteger
     {
-        int value;
+       int value;
+       Mutex tex = new Mutex();
 
-        public ConcurrentInteger()
-        {
-            value = 0;
-        }
-
-        public ConcurrentInteger(int value)
-        {
-            this.value = value;
-        }
-
-        /// <summary>
-        /// 自增并返回
-        /// </summary>
-        /// <returns></returns>
-        public int GetAndAdd()
-        {
-            lock(this)
-            {
+       public ConcurrentInteger() { }
+       public ConcurrentInteger(int value) {
+           lock (this)
+           {
+               this.value = value;
+           }
+       }
+       /// <summary>
+       /// 自增并返回值
+       /// </summary>
+       /// <returns></returns>
+       public int GetAndAdd() {
+           lock (this) {
+               tex.WaitOne();
                 value++;
-            }
-            return value;
-        }
+               tex.ReleaseMutex();
+               return value;
+           }
+       }
+       /// <summary>
+       /// 自减并返回值
+       /// </summary>
+       /// <returns></returns>
+       public int GetAndReduce() {
+           lock (this)
+           {
+               tex.WaitOne();
+               value--;
+               tex.ReleaseMutex();
+               return value;
+           }
+       }
+       /// <summary>
+       /// 重置value为0
+       /// </summary>
+       public void reset() {
+           lock (this)
+           {
+               tex.WaitOne();
+               value=0;
+               tex.ReleaseMutex();
+               
+           }
+       }
 
-        /// <summary>
-        /// 自减并返回
-        /// </summary>
-        /// <returns></returns>
-        public int GetAndReduce()
-        {
-            lock (this)
-            {
-                value--;
-            }
-            return value;
-        }
-
-        public void reset()
-        {
-            lock(this)
-            {
-                value = 0;
-            }
-        }
-
-        public int get()
-        {
-            return value;
-        }
+       public int get() {
+           return value;
+       }
     }
 }

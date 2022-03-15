@@ -5,67 +5,69 @@ using LOLServer.tool;
 using NetFrame;
 using NetFrame.auto;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LOLServer.logic.login
 {
-    public class LoginHandler :AbsOnceHandler ,HandlerInterface
+    public class LoginHandler : AbsOnceHandler, HandlerInterface
     {
-
         IAccountBiz accountBiz = BizFactory.accountBiz;
 
-        public void ClientClose(UserToken token, string error)
+        public void ClientClose(NetFrame.UserToken token, string error)
         {
-            Console.WriteLine("有客户端断开连接 ");
-            ExecutorPool.Instance.Execute(() =>
-            {
-                accountBiz.Close(token);
-            });
+            ExecutorPool.Instance.execute(
+                     delegate ()
+                     {
+                         accountBiz.close(token);
+                     }
+                     );
         }
 
-        public void MessageReceive(UserToken token, SocketModel message)
+        public void MessageReceive(NetFrame.UserToken token, NetFrame.auto.SocketModel message)
         {
             switch (message.command)
             {
                 case LoginProtocol.LOGIN_CREQ:
-                    Login(token, message.GetMessage<AccountInfoDTO>());
+                    login(token, message.GetMessage<AccountInfoDTO>());
                     break;
-
                 case LoginProtocol.REG_CREQ:
-                    Reg(token, message.GetMessage<AccountInfoDTO>());
+                    reg(token, message.GetMessage<AccountInfoDTO>());
                     break;
             }
         }
 
-        public void Login(UserToken token, AccountInfoDTO value)
+        public void login(UserToken token, AccountInfoDTO value)
         {
-            ExecutorPool.Instance.Execute(() =>
-            {
-                int res = accountBiz.Login(token, value.account, value.password);
-
-                Write(token, LoginProtocol.LOGIN_SRES, res);
-            });
+            ExecutorPool.Instance.execute(
+                delegate ()
+                {
+                    int result = accountBiz.login(token, value.account, value.password);
+                    write(token, LoginProtocol.LOGIN_SRES, result);
+                }
+                );
         }
-
-        public void Reg(UserToken token,AccountInfoDTO value)
+        public void reg(UserToken token, AccountInfoDTO value)
         {
-            ExecutorPool.Instance.Execute(() =>
-            {
-                int res = accountBiz.Register(token, value.account, value.password);
+            ExecutorPool.Instance.execute(
+                    delegate ()
+                    {
+                        int result = accountBiz.create(token, value.account, value.password);
+                        write(token, LoginProtocol.REG_SRES, result);
+                    }
+                    );
 
-                Write(token, LoginProtocol.REG_SRES, res);
-            });
-        }
-
-        public void ClientClose(UserToken token,AccountInfoDTO value)
-        {
-            ExecutorPool.Instance.Execute(() =>
-            {
-                accountBiz.Close(token);
-            });
         }
 
 
-        public override byte getType()
+        public void ClientConnect(NetFrame.UserToken token)
+        {
+
+        }
+
+        public override byte GetType()
         {
             return Protocol.TYPE_LOGIN;
         }

@@ -40,12 +40,12 @@ namespace LOLServer.logic
 
         public void broadcast(int command,object message,UserToken exToken = null)
         {
-            broadcast(getArea(), command, message, exToken);
+            broadcast(GetArea(), command, message, exToken);
         }
 
         public void broadcast(int area,int command, object message, UserToken exToken = null)
         {
-            broadcast(getType(),area, command, message, exToken);
+            broadcast(GetType(),area, command, message, exToken);
         }
 
         public void broadcast(byte type,int area, int command, object message, UserToken exToken = null)

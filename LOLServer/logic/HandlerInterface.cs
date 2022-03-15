@@ -2,16 +2,18 @@
 using NetFrame.auto;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LOLServer.logic
 {
-    public interface HandlerInterface
+   public interface HandlerInterface
     {
-        void ClientClose(UserToken token, string error);
+         void ClientClose(UserToken token, string error);
 
-        //void ClientConnect(UserToken token);
+      //   void ClientConnect(UserToken token);
 
-        void MessageReceive(UserToken token, SocketModel message);
+         void MessageReceive(UserToken token, SocketModel message);
     }
 }
